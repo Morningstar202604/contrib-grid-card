@@ -1,0 +1,38 @@
+name: "Contribution Grid Card (3D)"
+description: >-
+  [Profile Verse] Your GitHub contribution calendar rendered as a 3D isometric
+  field of gold columns. A fully self-built replacement for third-party
+  contribution animations — zero server, no third-party action, pure stdlib SVG.
+author: "Morningstar202604"
+branding:
+  icon: "bar-chart"
+  color: "yellow"
+
+inputs:
+  user:
+    description: "GitHub username"
+    required: true
+  output:
+    description: "Output path for the generated SVG"
+    required: false
+    default: "contrib-grid-card.svg"
+  token:
+    description: "GitHub token (defaults to the workflow's github.token)"
+    required: false
+    default: "${{ github.token }}"
+  theme:
+    description: "Color theme: dark (deep blue) or light (paper white)"
+    required: false
+    default: "dark"
+
+runs:
+  using: "composite"
+  steps:
+    - name: "Generate contribution grid"
+      shell: bash
+      env:
+        GH_TOKEN: ${{ inputs.token }}
+        USER: ${{ inputs.user }}
+        OUTPUT: ${{ inputs.output }}
+        THEME: ${{ inputs.theme }}
+      run: python3 "${{ github.action_path }}/generate_contrib_grid_card.py"
