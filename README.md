@@ -50,7 +50,7 @@ jobs:
         with:
           user: your-github-username
           output: contrib-grid-card.svg
-          theme: dark          # or light
+          theme: dark          # dark | light | rose | ocean
 
       - name: Commit & push
         run: |
@@ -78,12 +78,13 @@ Then reference it in your README with the theme-switching `<picture>` trick:
 | --- | --- | --- |
 | `user` | — | GitHub username (required) |
 | `output` | `contrib-grid-card.svg` | Output SVG path |
-| `theme` | `dark` | `dark` (starry night) or `light` (paper) |
+| `theme` | `dark` | `dark` (Midnight) · `light` (Ivory) · `rose` (Rose Gold) · `ocean` (Deep Sea) |
 
 ## Design
 
 - 3D isometric golden columns: top face light / right face mid / left face dark
 - Five gold tiers (GitHub levels) with a month axis over 53 weeks
+- Postcard letterpress edges: hairline marquees + vertical monograms
 - Part of the Profile Verse design language: starry night × gilded gold
 
 ## License
