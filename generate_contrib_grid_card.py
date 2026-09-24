@@ -22,7 +22,7 @@ import os
 import sys
 from datetime import date, datetime, timedelta, timezone
 
-_ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+_ROOT = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, _ROOT)
 
 from core import github as gh  # noqa: E402

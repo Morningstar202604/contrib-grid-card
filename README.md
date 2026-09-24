@@ -1,54 +1,91 @@
-# Contribution Grid Card (3D)
+<p align="center">
+  <img src="preview/contrib-grid-card.svg" alt="3D Golden Contribution Grid — dark" width="100%" />
+</p>
 
-![Contribution Grid Card](https://cdn.jsdelivr.net/gh/Morningstar202604/profile-verse@main/components/contrib-grid-card/preview/contrib-grid-card.svg)
+<h1 align="center">Contrib Grid Card</h1>
 
-把你的 GitHub 贡献日历，画成一片**3D 等距金色贡献柱**：柱子高度 = 当天贡献量，
-像一片金色城市从星空里长出来。
+<p align="center">
+  <b>The 3D golden contribution grid for your GitHub profile.</b><br/>
+  The "obviously different" card — isometric golden columns, real data, dark &amp; light themes, zero server.
+</p>
 
-**一眼特征：等距 3D 立体柱。** 主页的 3D 统计图为什么好看？因为它把"平面绿格子"
-换成了"立体柱状"——形态一变，一眼可辨。本卡就是这一思路的自研实现：等距投影 +
-三面着色（顶面亮、右面中、左面暗），金色分级（1 / 2-3 / 4-6 / 7+ 天贡献五档），
-完全替换第三方 3D 贡献 Action，零服务器、零第三方依赖、纯 Python 标准库生成 SVG。
+<p align="center">
+  <a href="https://github.com/Morningstar202604/contrib-grid-card/stargazers"><img src="https://img.shields.io/github/stars/Morningstar202604/contrib-grid-card?style=flat&color=%23C9A86A&label=stars" alt="GitHub stars" /></a>
+  <a href="https://github.com/Morningstar202604/contrib-grid-card/forks"><img src="https://img.shields.io/github/forks/Morningstar202604/contrib-grid-card?style=flat&color=%23C9A86A&label=forks" alt="GitHub forks" /></a>
+  <a href="LICENSE"><img src="https://img.shields.io/github/license/Morningstar202604/contrib-grid-card?style=flat&color=%23C9A86A" alt="MIT" /></a>
+  <a href="https://github.com/Morningstar202604/profile-verse"><img src="https://img.shields.io/badge/family-Profile%20Verse-8FB4F5?style=flat" alt="Part of Profile Verse" /></a>
+</p>
 
-数据真实：GitHub 贡献日历（GraphQL），每日自动刷新，月份刻度、图例、数据来源全部标注。
+A whole year of contributions as **isometric golden 3D columns** — light top, mid side, dark side — in five gold tiers over 53 weeks. No flat heatmap squares, no snake, no clone wars. Real data from the GitHub contribution calendar, stamped with source and refresh time.
 
-## 在 workflow 里使用
+This repo is the standalone release of the `contrib-grid-card` component from [Profile Verse](https://github.com/Morningstar202604/profile-verse). Use it standalone, or grab the whole 9-card family.
+
+> 🚀 **Live**: [Morningstar202604's homepage](https://github.com/Morningstar202604/Morningstar202604) runs this card daily.
+
+## Dark & light
+
+![Light](preview/contrib-grid-card-light.svg)
+
+## Usage
+
+Add a workflow step to your profile repo (`.github/workflows/contrib-grid.yml`):
 
 ```yaml
-- uses: actions/checkout@v4
-- name: Generate contribution grid
-  uses: Morningstar202604/profile-verse/components/contrib-grid-card@v1
-  with:
-    user: your-github-username
-    output: contrib-grid.svg
+name: Contrib Grid
+
+on:
+  schedule:
+    - cron: "10 1 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  card:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: Morningstar202604/contrib-grid-card@v1
+        with:
+          user: your-github-username
+          output: contrib-grid-card.svg
+          theme: dark          # or light
+
+      - name: Commit & push
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add contrib-grid-card.svg
+          if ! git diff --cached --quiet; then
+            git commit -m "chore: refresh contrib grid [skip ci]"
+            git push
+          fi
 ```
 
-## 在 README 里引用
+Then reference it in your README with the theme-switching `<picture>` trick:
 
 ```markdown
-![Contributions](https://cdn.jsdelivr.net/gh/你的用户名/你的仓库@main/contrib-grid.svg)
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="./contrib-grid-card.svg">
+  <img src="./contrib-grid-card-light.svg" alt="3D contribution grid" width="100%" />
+</picture>
 ```
 
-## 输入参数
+## Inputs
 
-| 参数 | 必填 | 默认 | 说明 |
-| --- | --- | --- | --- |
-| `user` | 是 | — | GitHub 用户名 |
-| `output` | 否 | `contrib-grid-card.svg` | 生成的 SVG 路径 |
-| `token` | 否 | `${{ github.token }}` | GitHub token（默认用 workflow 自带） |
-| `theme` | 否 | `dark` | 颜色主题：`dark`（深蓝星空）或 `light`（米白纸面） |
+| Input | Default | Description |
+| --- | --- | --- |
+| `user` | — | GitHub username (required) |
+| `output` | `contrib-grid-card.svg` | Output SVG path |
+| `theme` | `dark` | `dark` (starry night) or `light` (paper) |
 
-> 浅色主题示例：`theme: light`。
+## Design
 
-## 本地运行
+- 3D isometric golden columns: top face light / right face mid / left face dark
+- Five gold tiers (GitHub levels) with a month axis over 53 weeks
+- Part of the Profile Verse design language: starry night × gilded gold
 
-```bash
-GH_TOKEN=xxx USER=your-name python3 generate_contrib_grid_card.py
-```
+## License
 
-## 数据与刷新
-
-- 数据：GitHub 贡献日历 API（GraphQL），全年真实数据
-- 刷新：GitHub Actions 定时任务自动重跑并提交新 SVG，零服务器
-
-Part of **Profile Verse** · [仓库](https://github.com/Morningstar202604/profile-verse) · MIT
+MIT © Morningstar202604
