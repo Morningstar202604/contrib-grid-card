@@ -1,3 +1,10 @@
+> [!IMPORTANT]
+> **已合并回主仓 · MERGED BACK**
+> This standalone repo is **archived**. All development now lives in the
+> family monorepo: **[Morningstar202604/profile-verse](https://github.com/Morningstar202604/profile-verse)**
+> — use `uses: Morningstar202604/profile-verse/components/contrib-grid-card@v1`.
+> （本独立仓库已归档，全部开发已合并回全家桶主仓，引用请改用主仓路径。）
+
 <p align="center">
   <img src="preview/contrib-grid-card.svg" alt="3D Golden Contribution Grid — dark" width="100%" />
 </p>
