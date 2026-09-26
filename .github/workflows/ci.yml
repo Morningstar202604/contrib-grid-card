@@ -1,0 +1,49 @@
+name: CI
+
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  verify:
+    name: Verify generator (real data, dark + light)
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Syntax check (stdlib only, zero deps)
+        run: python3 -m py_compile generate_contrib_grid_card.py core/*.py
+
+      - name: Regenerate preview cards with real contribution data
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -e
+          USER=Morningstar202604 THEME=dark  OUTPUT=preview/contrib-grid-card.svg       python3 generate_contrib_grid_card.py
+          USER=Morningstar202604 THEME=light OUTPUT=preview/contrib-grid-card-light.svg python3 generate_contrib_grid_card.py
+
+      - name: Validate generated SVG (XML well-formed)
+        run: |
+          python3 -c "
+          import glob, xml.dom.minidom as m
+          files = sorted(glob.glob('preview/*.svg'))
+          assert files, 'no svg generated'
+          for f in files:
+              m.parse(f)
+          print('xml ok:', len(files), 'files')
+          "
